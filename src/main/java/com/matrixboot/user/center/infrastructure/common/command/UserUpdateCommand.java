@@ -1,6 +1,7 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * create in 2022/11/28 20:14
@@ -8,7 +9,8 @@ import javax.validation.constraints.NotBlank;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserCreateCommand(@NotBlank String username,
+public record UserUpdateCommand(@NotNull Long id,
+                                @NotBlank String username,
                                 @NotBlank String password,
                                 @NotBlank String mobile,
                                 @NotBlank String contacts,

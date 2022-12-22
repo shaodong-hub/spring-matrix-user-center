@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +50,7 @@ import java.util.Collections;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class UserEntity {
+public class MatrixUserEntity {
 
     /**
      * 用户的唯一 ID，与业务无关，自增
@@ -62,7 +63,7 @@ public class UserEntity {
     /**
      * 用户名，也是唯一的
      */
-    @Column(name = "username", columnDefinition = "VARCHAR(20) COMMENT '用户名'")
+    @Column(columnDefinition = "VARCHAR(20) COMMENT '用户名'")
     private String username;
 
     /**
@@ -75,19 +76,19 @@ public class UserEntity {
     /**
      * 手机号码，也是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(100) COMMENT '手机号码'")
+    @Column(columnDefinition = "VARCHAR(20) COMMENT '手机号码'")
     private String mobile;
 
     /**
      * 联系人姓名
      */
     @Column(columnDefinition = "VARCHAR(20) COMMENT '联系人姓名'")
-    private String contact;
+    private String contacts;
 
     /**
      * 用户的邮箱，按道理也应该是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(100) COMMENT '电子邮箱'")
+    @Column(columnDefinition = "VARCHAR(30) COMMENT '电子邮箱'")
     private String email;
 
     /**
@@ -120,8 +121,12 @@ public class UserEntity {
      * 账户是否启用
      */
     @JsonIgnore
-    @Column(name = "enabled", columnDefinition = "INT(1) DEFAULT 1 COMMENT '账号启用'")
+    @Column(name = "enabled", columnDefinition = "TINYINT DEFAULT 1 COMMENT '账号启用'")
     private Boolean enabled;
+
+    @Version
+    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")
+    private Long version;
 
     /**
      * domainEvent

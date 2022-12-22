@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public class Result<T> {
 
-    private static final String SUCCESS_CODE = "00000";
-    private static final String FAILURE_CODE = "10000";
+    private static final String SUCCESS_CODE = "000000";
+    private static final String FAILURE_CODE = "100000";
 
     private String code;
 

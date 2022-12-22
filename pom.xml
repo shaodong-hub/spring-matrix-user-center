@@ -18,10 +18,13 @@
 
     <properties>
         <java.version>17</java.version>
-        <jetbrains.version>23.0.0</jetbrains.version>
+        <jetbrains.version>23.1.0</jetbrains.version>
         <spring-cloud.version>2021.0.4</spring-cloud.version>
         <snakeyaml.version>1.33</snakeyaml.version>
+        <netty.version>4.1.86.Final</netty.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <commons-io.version>2.11.0</commons-io.version>
+
         <!-- 插件版本 -->
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jacoco.version>0.8.5</jacoco.version>
@@ -30,6 +33,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
         <!--增加mapstruct依赖-->
         <dependency>
             <groupId>org.mapstruct</groupId>

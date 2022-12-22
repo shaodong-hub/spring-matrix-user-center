@@ -1,11 +1,13 @@
 package com.matrixboot.user.center.domain.repository;
 
-import com.matrixboot.user.center.domain.entity.UserEntity;
+import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * create in 2022/11/28 19:36
@@ -13,7 +15,7 @@ import org.springframework.data.jpa.repository.Query;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IUserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
+public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long>, JpaSpecificationExecutor<MatrixUserEntity> {
 
     /**
      * findById
@@ -51,6 +53,7 @@ public interface IUserRepository extends JpaRepository<UserEntity, Long>, JpaSpe
      *
      * @param id id
      */
-    @Query("UPDATE UserEntity AS user SET user.lastLoginDate = current_timestamp WHERE user.id = #{id}")
-    void updateLastLoginDateById(long id);
+    @Modifying
+    @Query("UPDATE MatrixUserEntity AS user SET user.lastLoginDate = current_timestamp WHERE user.id = :id")
+    void updateLastLoginDateById(@Param("id") long id);
 }

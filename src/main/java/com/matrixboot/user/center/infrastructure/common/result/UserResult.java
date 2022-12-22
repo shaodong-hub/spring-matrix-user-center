@@ -8,6 +8,6 @@ import java.io.Serializable;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserResultVO(Long id, String username) implements Serializable {
+public record UserResult(Long id, String username) implements Serializable {
 
 }
