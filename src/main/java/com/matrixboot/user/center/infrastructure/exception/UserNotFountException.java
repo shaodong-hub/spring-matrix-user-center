@@ -16,9 +16,9 @@ public class UserNotFountException extends RuntimeException{
     private static final long serialVersionUID = -1041772808948135766L;
 
     @Getter
-    private Long id;
+    private String id;
 
-    public UserNotFountException(Long id) {
+    public UserNotFountException(String id) {
         this.id = id;
     }
 }

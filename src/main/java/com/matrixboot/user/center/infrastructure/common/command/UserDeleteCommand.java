@@ -8,5 +8,5 @@ import org.jetbrains.annotations.NotNull;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserDeleteCommand(@NotNull Long id) {
+public record UserDeleteCommand(@NotNull String id) {
 }

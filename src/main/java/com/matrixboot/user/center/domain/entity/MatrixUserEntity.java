@@ -1,27 +1,20 @@
 package com.matrixboot.user.center.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matrixboot.user.center.infrastructure.common.event.UserCreateEvent;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.DomainEvents;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,98 +27,93 @@ import java.util.Collections;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@Slf4j
-@Entity
-@Table(name = "matrix_user",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"username"}, name = "UK_USERNAME"),
-                @UniqueConstraint(columnNames = {"mobile"}, name = "UK_MOBILE"),
-                @UniqueConstraint(columnNames = {"email"}, name = "UK_EMAIL"),
-        },
-        indexes = {
-                @Index(columnList = "last_login_date", name = "IDX_LAST_LOGIN_DATE")
-        }
-)
-@DynamicInsert
-@DynamicUpdate
-@EntityListeners(AuditingEntityListener.class)
+@ToString
+@Document(collection = "matrix_user")
+@CompoundIndex(unique = true, name = "UK_USERNAME", def = "{'username':1}")
+@CompoundIndex(unique = true, name = "UK_MOBILE", def = "{'mobile':1}")
+@CompoundIndex(unique = true, name = "UK_EMAIL", def = "{'email':1}")
+@CompoundIndex(name = "idx_region_age", def = "{'region':1,'age':1}")
 public class MatrixUserEntity {
 
     /**
      * 用户的唯一 ID，与业务无关，自增
      */
     @Id
-    @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     /**
      * 用户名，也是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '用户名'")
     private String username;
 
     /**
      * 密码
      */
     @JsonIgnore
-    @Column(columnDefinition = "VARCHAR(100) COMMENT '密码'")
     private String password;
 
     /**
      * 手机号码，也是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '手机号码'")
     private String mobile;
 
     /**
      * 联系人姓名
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '联系人姓名'")
     private String contacts;
 
     /**
      * 用户的邮箱，按道理也应该是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(30) COMMENT '电子邮箱'")
     private String email;
+
+    @CreatedDate
+    @Field("created_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    @Field("last_modified_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastModifiedDate;
 
     /**
      * 用户的最后登录时间
      */
-    @Column(name = "last_login_date", columnDefinition = "DATETIME COMMENT '最后登录时间'")
+    @Field("last_login_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastLoginDate;
 
     /**
      * 账户过期时间
      */
-    @Column(name = "account_expired_date", columnDefinition = "DATETIME COMMENT '账号没有过期'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Field("account_expired_date")
     private LocalDateTime accountExpiredDate;
 
     /**
      * 账户锁定到的时间
      */
     @JsonIgnore
-    @Column(name = "account_non_locked_date", columnDefinition = "DATETIME COMMENT '账号没有被锁定'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Field("account_non_locked_date")
     private LocalDateTime accountNonLockedDate;
 
     /**
      * 密码过期时间
      */
     @JsonIgnore
-    @Column(name = "credentials_non_expired_date", columnDefinition = "DATETIME COMMENT '凭证没有过期'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Field("credentials_non_expired_date")
     private LocalDateTime credentialsNonExpiredDate;
 
     /**
      * 账户是否启用
      */
     @JsonIgnore
-    @Column(name = "enabled", columnDefinition = "TINYINT DEFAULT 1 COMMENT '账号启用'")
     private Boolean enabled;
 
     @Version
-    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")
     private Long version;
 
     /**

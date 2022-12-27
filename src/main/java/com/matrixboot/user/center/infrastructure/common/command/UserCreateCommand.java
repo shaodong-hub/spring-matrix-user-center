@@ -1,6 +1,6 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * create in 2022/11/28 20:14

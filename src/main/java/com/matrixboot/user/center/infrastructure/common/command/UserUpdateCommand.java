@@ -1,7 +1,7 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * create in 2022/11/28 20:14
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserUpdateCommand(@NotNull Long id,
+public record UserUpdateCommand(@NotNull String id,
                                 @NotBlank String username,
                                 @NotBlank String password,
                                 @NotBlank String mobile,

@@ -1,8 +1,13 @@
 package com.matrixboot.user.center.interfaces.facade;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import io.micrometer.core.instrument.util.IOUtils;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -10,17 +15,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import javax.annotation.Resource;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("junit")
 @AutoConfigureMockMvc
-@Sql("classpath:sql/matrix_user.sql")
+//@Sql("classpath:sql/matrix_user.sql")
 @AutoConfigureRestDocs
 class UserFacadeTest {
 
@@ -50,20 +56,39 @@ class UserFacadeTest {
     @Value("classpath:json/UserDeleteCommand.json")
     org.springframework.core.io.Resource userDeleteCommand;
 
+    @Value("classpath:db/matrix_user.json")
+    org.springframework.core.io.Resource data;
+
     @Resource
     IMatrixUserRepository repository;
 
+    @Resource
+    ObjectMapper objectMapper;
+
+    private static final TypeReference<List<MatrixUserEntity>> TYPE_REFERENCE = new TypeReference<>() {
+    };
+
+    @BeforeEach
+    void beforeEach() throws IOException {
+        String string = IOUtils.toString(data.getInputStream(), StandardCharsets.UTF_8);
+        List<MatrixUserEntity> list = objectMapper.readValue(string, TYPE_REFERENCE);
+        repository.saveAll(list);
+    }
+
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         repository.deleteAll();
     }
 
     @Test
     void findByCondition() throws Exception {
-        this.mvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = this.mvc.perform(get("/users?username=test").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalElements").value(2))
                 .andDo(document("list-users"))
-        ;
+                .andReturn();
+        String s = mvcResult.getResponse().getContentAsString();
+        System.out.println(s);
     }
 
     @Test
@@ -79,7 +104,7 @@ class UserFacadeTest {
 
     @Test
     void findUserByUsername2() throws Exception {
-        this.mvc.perform(get("/user/username/test_username1").accept(MediaType.APPLICATION_JSON))
+        this.mvc.perform(get("/username/test_username1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("000000"))
                 .andExpect(jsonPath("$.data.id").value(1))

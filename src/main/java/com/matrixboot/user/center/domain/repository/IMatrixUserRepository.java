@@ -3,11 +3,7 @@ package com.matrixboot.user.center.domain.repository;
 import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  * create in 2022/11/28 19:36
@@ -15,7 +11,7 @@ import org.springframework.data.repository.query.Param;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long>, JpaSpecificationExecutor<MatrixUserEntity> {
+public interface IMatrixUserRepository extends MongoRepository<MatrixUserEntity, String> {
 
     /**
      * findById
@@ -25,7 +21,7 @@ public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, L
      * @param <T> clz
      * @return clz
      */
-    <T> T findById(long id, Class<T> clz);
+    <T> T findById(String id, Class<T> clz);
 
     /**
      * findByUsername
@@ -47,13 +43,4 @@ public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, L
      * @return Page clz
      */
     <T> Page<T> findAllByUsernameStartsWith(String username, Pageable pageable, Class<T> clz);
-
-    /**
-     * updateLastLoginDate
-     *
-     * @param id id
-     */
-    @Modifying
-    @Query("UPDATE MatrixUserEntity AS user SET user.lastLoginDate = current_timestamp WHERE user.id = :id")
-    void updateLastLoginDateById(@Param("id") long id);
 }

@@ -30,22 +30,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MatrixUserFacade {
 
-    private final IMatrixUserRepository repository;
-
     private final MatrixUserService userService;
 
     @GetMapping("/users")
     public Result<Page<UserResult>> findByCondition(@NotNull UserQuery query, Pageable pageable) {
-        var page = repository.findAllByUsernameStartsWith(query.username(), pageable, UserResult.class);
-        return Result.success(page);
+        return Result.success(userService.findByConditions(query, pageable));
     }
 
     @GetMapping("/user/id/{id}")
-    public Result<UserResult> findUserByUsername(@PathVariable Long id) {
+    public Result<UserResult> findUserById(@PathVariable String id) {
         return Result.success(userService.findUserById(id));
     }
 
-    @GetMapping("/user/username/{username}")
+    @GetMapping("/username/{username}")
     public Result<UserResult> findUserByUsername(@PathVariable String username) {
         return Result.success(userService.findUserByUsername(username));
     }
