@@ -1,5 +1,6 @@
 package com.matrixboot.user.center.application.service;
 
+import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
 import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
@@ -21,7 +22,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -96,12 +96,12 @@ public class MatrixUserService {
             @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
             @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()")
     })
-    @Transactional(rollbackFor = Exception.class)
     public UserResult updateUser(@NotNull @Valid UserUpdateCommand command) {
         var optional = repository.findById(command.id());
         var entity = optional.orElseThrow(() -> new UserNotFountException(command.id()));
         IMatrixUserMapper.INSTANCE.update(command, entity);
-        return IMatrixUserMapper.INSTANCE.from(entity);
+        MatrixUserEntity save = repository.save(entity);
+        return IMatrixUserMapper.INSTANCE.from(save);
     }
 
     /**
