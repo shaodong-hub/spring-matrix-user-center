@@ -1,17 +1,20 @@
 package com.matrixboot.user.center.application.service;
 
-import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
 import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
 import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
-import com.matrixboot.user.center.infrastructure.exception.UserNotFountException;
+import com.matrixboot.user.center.infrastructure.exception.UserEmailNotFountException;
+import com.matrixboot.user.center.infrastructure.exception.UserIdNotFountException;
+import com.matrixboot.user.center.infrastructure.exception.UserMobileNotFountException;
+import com.matrixboot.user.center.infrastructure.exception.UsernameNotFountException;
 import com.matrixboot.user.center.infrastructure.mapper.IMatrixUserMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.CacheConfig;
@@ -23,6 +26,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Optional;
 
 /**
  * create in 2022/11/28 20:10
@@ -43,17 +48,74 @@ public class MatrixUserService {
         return repository.findAllByUsernameStartsWith(query.getUsername() + "", pageable, UserResult.class);
     }
 
-
     /**
      * findUserById
      *
      * @param id id
      * @return UserResult
      */
-    @Cacheable(key = "'id:' + #id", unless = "null == #id")
-    public UserResult findUserById(String id) {
+    @Caching(
+            cacheable = {
+                    @Cacheable(key = "'id:' + #id", unless = "null == #id")
+            },
+            put = {
+                    @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
+                    @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
+                    @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
+            }
+    )
+    @SneakyThrows(Throwable.class)
+    public UserResult findUserById(Long id) {
         log.info("findUserById {}", id);
-        return repository.findById(id, UserResult.class);
+        Optional<UserResult> optional = repository.findById(id, UserResult.class);
+        return optional.orElseThrow(() -> new UserIdNotFountException(id));
+    }
+
+
+    /**
+     * findByMobile
+     *
+     * @param mobile mobile
+     * @return UserResult
+     */
+    @Caching(
+            cacheable = {
+                    @Cacheable(key = "'mobile:' + #mobile", unless = "null == #mobile")
+            },
+            put = {
+                    @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
+                    @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
+            }
+    )
+    @SneakyThrows(Throwable.class)
+    public UserResult findByMobile(@NotNull @NotBlank String mobile) {
+        log.info("findByMobile {}", mobile);
+        Optional<UserResult> optional = repository.findByMobile(mobile, UserResult.class);
+        return optional.orElseThrow(() -> new UserMobileNotFountException(mobile));
+    }
+
+    /**
+     * findByEmail
+     *
+     * @param email email
+     * @return UserResult
+     */
+    @Caching(
+            cacheable = {
+                    @Cacheable(key = "'email:' + #email", unless = "null == #email")
+            },
+            put = {
+                    @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
+                    @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
+            }
+    )
+    @SneakyThrows(Throwable.class)
+    public UserResult findByEmail(@NotNull @NotBlank String email) {
+        log.info("findByEmail {}", email);
+        Optional<UserResult> optional = repository.findByEmail(email, UserResult.class);
+        return optional.orElseThrow(() -> new UserEmailNotFountException(email));
     }
 
     /**
@@ -62,10 +124,20 @@ public class MatrixUserService {
      * @param username username
      * @return UserResult
      */
-    @Cacheable(key = "'username:' + #username", unless = "null == #username")
+    @Caching(
+            cacheable = {
+                    @Cacheable(key = "'username:' + #username", unless = "null == #username")
+            },
+            put = {
+                    @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
+                    @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
+            }
+    )
     public UserResult findUserByUsername(@NotNull @NotBlank String username) {
         log.info("findUserByUsername {}", username);
-        return repository.findByUsername(username, UserResult.class);
+        Optional<UserResult> optional = repository.findByUsername(username, UserResult.class);
+        return optional.orElseThrow(() -> new UsernameNotFountException(username));
     }
 
     /**
@@ -76,8 +148,9 @@ public class MatrixUserService {
      */
     @Caching(put = {
             @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
-            @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()")
-
+            @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
+            @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
+            @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
     })
     public UserResult createUser(@Valid UserCreateCommand command) {
         log.info("createUser {}", command);
@@ -92,15 +165,25 @@ public class MatrixUserService {
      * @param command UserUpdateCommand
      * @return UserResult
      */
-    @Caching(put = {
-            @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
-            @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()")
-    })
+    @Caching(
+            evict = {
+                    @CacheEvict(key = "'id:' + #result.id()"),
+                    @CacheEvict(key = "'username:' + #command.username()"),
+                    @CacheEvict(key = "'mobile:' + #command.mobile()"),
+                    @CacheEvict(key = "'email:' + #command.email()"),
+            },
+            put = {
+                    @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
+                    @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
+                    @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
+                    @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
+            }
+    )
     public UserResult updateUser(@NotNull @Valid UserUpdateCommand command) {
         var optional = repository.findById(command.id());
-        var entity = optional.orElseThrow(() -> new UserNotFountException(command.id()));
+        var entity = optional.orElseThrow(() -> new UserIdNotFountException(command.id()));
         IMatrixUserMapper.INSTANCE.update(command, entity);
-        MatrixUserEntity save = repository.save(entity);
+        var save = repository.save(entity);
         return IMatrixUserMapper.INSTANCE.from(save);
     }
 
@@ -112,12 +195,14 @@ public class MatrixUserService {
      */
     @Caching(evict = {
             @CacheEvict(key = "'id:' + #result.id()"),
-            @CacheEvict(key = "'username:' + #result.username()")
+            @CacheEvict(key = "'username:' + #result.username()"),
+            @CacheEvict(key = "'mobile:' + #result.mobile()"),
+            @CacheEvict(key = "'email:' + #result.email()"),
     })
     public UserResult deleteUserById(@NotNull @Valid UserDeleteCommand command) {
         log.info("deleteUserById {}", command);
         var optional = repository.findById(command.id());
-        var user = optional.orElseThrow(() -> new UserNotFountException(command.id()));
+        var user = optional.orElseThrow(() -> new UserIdNotFountException(command.id()));
         repository.delete(user);
         return IMatrixUserMapper.INSTANCE.from(user);
     }

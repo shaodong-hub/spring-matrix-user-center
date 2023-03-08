@@ -3,7 +3,9 @@ package com.matrixboot.user.center.domain.repository;
 import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 /**
  * create in 2022/11/28 19:36
@@ -11,7 +13,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IMatrixUserRepository extends MongoRepository<MatrixUserEntity, String> {
+public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long> {
 
     /**
      * findById
@@ -21,7 +23,7 @@ public interface IMatrixUserRepository extends MongoRepository<MatrixUserEntity,
      * @param <T> clz
      * @return clz
      */
-    <T> T findById(String id, Class<T> clz);
+    <T> Optional<T> findById(Long id, Class<T> clz);
 
     /**
      * findByUsername
@@ -31,7 +33,27 @@ public interface IMatrixUserRepository extends MongoRepository<MatrixUserEntity,
      * @param <T>      clz
      * @return clz
      */
-    <T> T findByUsername(String username, Class<T> clz);
+    <T> Optional<T> findByUsername(String username, Class<T> clz);
+
+    /**
+     * findByMobile
+     *
+     * @param mobile mobile
+     * @param clz    clz
+     * @param <T>    clz
+     * @return clz
+     */
+    <T> Optional<T> findByMobile(String mobile, Class<T> clz);
+
+    /**
+     * findByEmail
+     *
+     * @param email email
+     * @param clz   clz
+     * @param <T>   clz
+     * @return clz
+     */
+    <T> Optional<T> findByEmail(String email, Class<T> clz);
 
     /**
      * findAllByUsernameStartsWith

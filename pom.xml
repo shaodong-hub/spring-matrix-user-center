@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -19,7 +19,7 @@
     <properties>
         <java.version>17</java.version>
         <jetbrains.version>23.1.0</jetbrains.version>
-        <spring-cloud.version>2022.0.0</spring-cloud.version>
+        <spring-cloud.version>2022.0.1</spring-cloud.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <commons-io.version>2.11.0</commons-io.version>
         <!-- 插件版本 -->
@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,11 +75,17 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
@@ -117,31 +123,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.8</version>
-                <executions>
-                    <execution>
-                        <id>generate-docs</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html</backend>
-                            <doctype>book</doctype>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.springframework.restdocs</groupId>
-                        <artifactId>spring-restdocs-asciidoctor</artifactId>
-                        <version>${spring-restdocs.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -151,15 +132,56 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            <!-- 打包时加入当前 GIT 提交信息 -->
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <configuration>
-                    <offline>true</offline>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <excludeDevtools>false</excludeDevtools>
+                    <image>
+                        <!--要使用的构建器映像的名称。默认：paketobuildpacks/builder:base-->
+                        <builder>paketobuildpacks/builder:0.2.329-full</builder>
+                        <!-- 运行时 Image -->
+                        <runImage>paketobuildpacks/run:1.3.152-full-cnb</runImage>
+                        <!--映像生成的映像的名称。-->
+                        <name>
+                            registry-vpc.cn-hangzhou.aliyuncs.com/shishaodong/${project.artifactId}:${project.version}
+                        </name>
+                        <!-- 打出来额外的 tag -->
+                        <tags>
+                            <tag>shishaodong/${project.artifactId}:latest</tag>
+                        </tags>
+                        <env>
+                            <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                            <BPE_OVERRIDE_LANG>en_US.UTF-8</BPE_OVERRIDE_LANG>
+                            <BPE_OVERRIDE_LC_ALL>en_US.UTF-8</BPE_OVERRIDE_LC_ALL>
+                            <BPE_OVERRIDE_TZ>Asia/Shanghai</BPE_OVERRIDE_TZ>
+                        </env>
+                        <!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT。默认 ALWAYS-->
+                        <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                        <!--是否需要在建立缓存前清理缓存。默认false-->
+                        <cleanCache>false</cleanCache>
+                        <!-- 启用构造器操作的详细日志记录。默认false-->
+                        <verboseLogging>true</verboseLogging>
+                        <!-- 执行完build 自动push。默认 false -->
+                        <publish>false</publish>
+                        <!-- mvn clean spring-boot:build-image -Dproject.path=/绝对路径/spring-boot-examples -f pom.xml -->
+                        <bindings>
+                            <binding>
+                                ${project.basedir}/k8s/buildpack/bellsoft-liberica/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_bellsoft-liberica/9.11.0/buildpack.toml
+                            </binding>
+                            <binding>
+                                ${project.basedir}/k8s/buildpack/spring-boot/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_spring-boot/5.23.0/buildpack.toml
+                            </binding>
+                            <binding>
+                                ${project.basedir}/k8s/buildpack/syft/buildpack.toml:/cnb/buildpacks/paketo-buildpacks_syft/1.25.0/buildpack.toml
+                            </binding>
+                        </bindings>
+                    </image>
+<!--                    <docker>-->
+<!--                        <tlsVerify>false</tlsVerify>-->
+<!--                        <publishRegistry>-->
+<!--                            <username>${docker.username}</username>-->
+<!--                            <password>${docker.password}</password>-->
+<!--                            <url>${docker.url}</url>-->
+<!--                            <email>${docker.email}</email>-->
+<!--                        </publishRegistry>-->
+<!--                    </docker>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -167,8 +189,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.version}</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -189,7 +211,7 @@
                         <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${parent.version}</version>
+                            <version>${project.parent.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

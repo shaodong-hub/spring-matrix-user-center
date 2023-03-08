@@ -38,7 +38,7 @@ public class MatrixUserFacade {
     }
 
     @GetMapping("/user/id/{id}")
-    public Result<UserResult> findUserById(@PathVariable String id) {
+    public Result<UserResult> findUserById(@PathVariable Long id) {
         return Result.success(userService.findUserById(id));
     }
 

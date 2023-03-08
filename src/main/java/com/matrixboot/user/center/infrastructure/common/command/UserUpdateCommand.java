@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserUpdateCommand(@NotNull String id,
+public record UserUpdateCommand(@NotNull Long id,
                                 @NotBlank String username,
                                 @NotBlank String password,
                                 @NotBlank String mobile,
