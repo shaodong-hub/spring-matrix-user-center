@@ -56,7 +56,7 @@ name = "Spring Cloud Bindings"
 purl = "pkg:generic/springframework/spring-cloud-bindings@1.11.0"
 sha256 = "9f76c9c93748472a9f145999d4da99c1d8cb070872bba574843c45ef1d14c27f"
 stacks = ["io.buildpacks.stacks.bionic", "io.paketo.stacks.tiny", "*"]
-uri = "http://127.0.0.1:18080/buildpack/maven2/org/springframework/cloud/spring-cloud-bindings/1.11.0/spring-cloud-bindings-1.11.0.jar"
+uri = "http://172.17.0.3:18080/buildpack/maven2/org/springframework/cloud/spring-cloud-bindings/1.11.0/spring-cloud-bindings-1.11.0.jar"
 version = "1.11.0"
 
 [[metadata.dependencies.licenses]]

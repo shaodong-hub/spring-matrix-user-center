@@ -1,8 +1,13 @@
 package com.matrixboot.user.center.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.matrixboot.user.center.domain.IdCard;
 import com.matrixboot.user.center.infrastructure.common.event.UserCreateEvent;
+import com.matrixboot.user.center.infrastructure.converter.IdNumberConverter;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -91,6 +96,12 @@ public class MatrixUserEntity implements Serializable {
      */
     @Column(columnDefinition = "VARCHAR(20) COMMENT '联系人姓名'")
     private String contacts;
+
+    @Embedded
+    @Convert(attributeName = "idNumber", converter = IdNumberConverter.class)
+    @AttributeOverride(name = "frontPicture", column = @Column(nullable = false, columnDefinition = "CHAR(20) COMMENT 'frontPicture'"))
+    @AttributeOverride(name = "backPicture", column = @Column(nullable = false, columnDefinition = "CHAR(20) COMMENT 'backPicture'"))
+    private IdCard idCard;
 
     /**
      * 用户的邮箱，按道理也应该是唯一的
