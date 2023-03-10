@@ -1,12 +1,11 @@
 package com.matrixboot.user.center.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.matrixboot.user.center.domain.AuditInfo;
 import com.matrixboot.user.center.domain.IdCard;
+import com.matrixboot.user.center.domain.UserStatus;
 import com.matrixboot.user.center.infrastructure.common.event.UserCreateEvent;
-import com.matrixboot.user.center.infrastructure.converter.IdNumberConverter;
-import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -23,7 +22,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -75,80 +73,52 @@ public class MatrixUserEntity implements Serializable {
     /**
      * 用户名，也是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '用户名'")
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT '' COMMENT '用户名'")
     private String username;
 
     /**
      * 密码
      */
     @JsonIgnore
-    @Column(columnDefinition = "VARCHAR(100) COMMENT '密码'")
+    @Column(columnDefinition = "VARCHAR(100) DEFAULT '' COMMENT '密码'")
     private String password;
 
     /**
      * 手机号码，也是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '手机号码'")
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT '' COMMENT '手机号码'")
     private String mobile;
 
     /**
      * 联系人姓名
      */
-    @Column(columnDefinition = "VARCHAR(20) COMMENT '联系人姓名'")
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT '' COMMENT '联系人姓名'")
     private String contacts;
-
-    @Embedded
-    @Convert(attributeName = "idNumber", converter = IdNumberConverter.class)
-    @AttributeOverride(name = "frontPicture", column = @Column(nullable = false, columnDefinition = "CHAR(20) COMMENT 'frontPicture'"))
-    @AttributeOverride(name = "backPicture", column = @Column(nullable = false, columnDefinition = "CHAR(20) COMMENT 'backPicture'"))
-    private IdCard idCard;
 
     /**
      * 用户的邮箱，按道理也应该是唯一的
      */
-    @Column(columnDefinition = "VARCHAR(30) COMMENT '电子邮箱'")
+    @Column(columnDefinition = "VARCHAR(30) DEFAULT '' COMMENT '电子邮箱'")
     private String email;
+
+    @Embedded
+    private IdCard idCard;
+
+    @Embedded
+    private UserStatus userStatus;
+
+    @Embedded
+    private AuditInfo auditInfo;
+
+    @Version
+    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")
+    private Long version;
 
     /**
      * 用户的最后登录时间
      */
     @Column(name = "last_login_date", columnDefinition = "DATETIME COMMENT '最后登录时间'")
     private LocalDateTime lastLoginDate;
-
-    /**
-     * 账户过期时间
-     */
-    @Column(name = "account_expired_date", columnDefinition = "DATETIME COMMENT '账号没有过期'")
-    private LocalDateTime accountExpiredDate;
-
-    /**
-     * 账户锁定到的时间
-     */
-    @JsonIgnore
-    @Column(name = "account_non_locked_date", columnDefinition = "DATETIME COMMENT '账号没有被锁定'")
-    private LocalDateTime accountNonLockedDate;
-
-    /**
-     * 密码过期时间
-     */
-    @JsonIgnore
-    @Column(name = "credentials_non_expired_date", columnDefinition = "DATETIME COMMENT '凭证没有过期'")
-    private LocalDateTime credentialsNonExpiredDate;
-
-    @CreatedDate
-    @Column(name = "created_date", columnDefinition = "DATETIME COMMENT '创建时间'")
-    private LocalDateTime createdDate;
-
-    /**
-     * 账户是否启用
-     */
-    @JsonIgnore
-    @Column(name = "enabled", columnDefinition = "TINYINT DEFAULT 1 COMMENT '账号启用'")
-    private Boolean enabled;
-
-    @Version
-    @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")
-    private Long version;
 
     /**
      * domainEvent
@@ -160,4 +130,11 @@ public class MatrixUserEntity implements Serializable {
     public Collection<UserCreateEvent> domainEvent() {
         return Collections.singletonList(new UserCreateEvent(this.getId(), this.getUsername()));
     }
+
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "user_id")
+//    @MapKey(name = "roleCode")
+//    @JsonManagedReference
+//    private Map<String, MatrixRoleEntity> roles;
+
 }

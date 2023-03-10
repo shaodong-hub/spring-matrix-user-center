@@ -1,7 +1,5 @@
 package com.matrixboot.user.center.infrastructure.exception;
 
-import lombok.Getter;
-
 import java.io.Serial;
 
 /**

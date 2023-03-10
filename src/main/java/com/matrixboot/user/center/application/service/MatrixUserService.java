@@ -4,7 +4,6 @@ import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
 import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
 import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
-import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import com.matrixboot.user.center.infrastructure.exception.UserEmailNotFountException;
 import com.matrixboot.user.center.infrastructure.exception.UserIdNotFountException;
@@ -22,8 +21,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -43,10 +40,6 @@ import java.util.Optional;
 public class MatrixUserService {
 
     private final IMatrixUserRepository repository;
-
-    public Page<UserResult> findByConditions(@NotNull UserQuery query, Pageable pageable) {
-        return repository.findAllByUsernameStartsWith(query.getUsername() + "", pageable, UserResult.class);
-    }
 
     /**
      * findUserById

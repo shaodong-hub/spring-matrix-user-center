@@ -2,7 +2,6 @@ package com.matrixboot.user.center.infrastructure.exception.handler;
 
 import com.matrixboot.user.center.infrastructure.common.Result;
 import com.matrixboot.user.center.infrastructure.exception.UserIdNotFountException;
-import com.matrixboot.user.center.infrastructure.exception.UserNotFountException;
 import com.matrixboot.user.center.infrastructure.exception.UsernameNotFountException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.ExceptionHandler;

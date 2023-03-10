@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
@@ -28,6 +29,7 @@ import java.nio.charset.StandardCharsets;
  * @author shishaodong
  * @version 0.0.1
  */
+@Rollback(value = false)
 @SpringBootTest
 @ActiveProfiles("junit")
 @Sql("classpath:sql/matrix_user.sql")
@@ -51,12 +53,8 @@ class MatrixUserServiceTest {
     org.springframework.core.io.Resource userUpdateCommand;
 
     @AfterEach
-    void afterEach(){
-        repository.deleteAll();
-    }
-
-    @Test
-    void findByConditions() {
+    void afterEach() {
+//        repository.deleteAll();
     }
 
     @Test
@@ -86,6 +84,7 @@ class MatrixUserServiceTest {
         Assertions.assertEquals(1L, result.id());
         Assertions.assertEquals("test_username1", result.username());
     }
+
     @Test
     void createUser() throws IOException {
         String string = IOUtils.toString(userCreateCommand.getInputStream(), StandardCharsets.UTF_8);
@@ -109,6 +108,4 @@ class MatrixUserServiceTest {
         Assertions.assertEquals(1L, result.id());
         Assertions.assertEquals("test_username1", result.username());
     }
-
-
 }
