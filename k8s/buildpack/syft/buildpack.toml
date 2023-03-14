@@ -38,7 +38,7 @@ name = "Syft"
 purl = "pkg:generic/anchore-syft@0.73.0"
 sha256 = "1ca442b57172d73edc4a7cee63659806e80020fbd457d74289a2fbe89b71687b"
 stacks = ["io.buildpacks.stacks.bionic", "io.paketo.stacks.tiny", "*"]
-uri = "http://172.17.0.3:18080/buildpack/anchore/syft/releases/download/v0.73.0/syft_0.73.0_linux_amd64.tar.gz"
+uri = "http://172.17.0.2:18080/buildpack/anchore/syft/releases/download/v0.73.0/syft_0.73.0_linux_amd64.tar.gz"
 version = "0.73.0"
 
 [[metadata.dependencies.licenses]]

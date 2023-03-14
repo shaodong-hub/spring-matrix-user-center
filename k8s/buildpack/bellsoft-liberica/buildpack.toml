@@ -231,7 +231,7 @@ purl = "pkg:generic/bellsoft-jre@17.0.6?arch=amd64"
 sha256 = "bf01d735c28d2614a91b1298adf45af60ed8699014876cc1d8158ade90fcdb32"
 stacks = ["io.buildpacks.stacks.bionic", "io.paketo.stacks.tiny", "*"]
 #uri = "https://github.com/bell-sw/Liberica/releases/download/17.0.6+10/bellsoft-jre17.0.6+10-linux-amd64.tar.gz"
-uri = "http://172.17.0.3:18080/buildpack/bell-sw/Liberica/releases/download/17.0.6+10/bellsoft-jre17.0.6+10-linux-amd64.tar.gz"
+uri = "http://172.17.0.2:18080/buildpack/bell-sw/Liberica/releases/download/17.0.6+10/bellsoft-jre17.0.6+10-linux-amd64.tar.gz"
 version = "17.0.6"
 
 [[metadata.dependencies.licenses]]
