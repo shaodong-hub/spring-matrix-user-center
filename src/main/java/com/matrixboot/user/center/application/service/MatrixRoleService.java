@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -37,10 +38,24 @@ public class MatrixRoleService {
 
     private final IMatrixRoleRepository repository;
 
+    /**
+     * findByConditions
+     *
+     * @param query    query
+     * @param pageable pageable
+     * @return Page
+     */
+    @PreAuthorize("@check.hasPermission()")
     public Page<RoleResult> findByConditions(RoleQuery query, Pageable pageable) {
         return repository.findAllBy(pageable, RoleResult.class);
     }
 
+    /**
+     * findRoleById
+     *
+     * @param id id
+     * @return RoleResult
+     */
     @Cacheable(key = "'id:' + #id", unless = "null == #id")
     public RoleResult findRoleById(Long id) {
         log.info("findRoleById {}", id);
@@ -48,6 +63,12 @@ public class MatrixRoleService {
         return optional.orElseThrow(RoleNotFoundException::new);
     }
 
+    /**
+     * createRole
+     *
+     * @param command RoleCreateCommand
+     * @return RoleResult
+     */
     @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()")
     public RoleResult createRole(@NotNull @Valid RoleCreateCommand command) {
         var role = IMatrixRoleMapper.INSTANCE.from(command);
@@ -55,6 +76,12 @@ public class MatrixRoleService {
         return IMatrixRoleMapper.INSTANCE.from(entity);
     }
 
+    /**
+     * updateRole
+     *
+     * @param command RoleUpdateCommand
+     * @return RoleResult
+     */
     @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()")
     public RoleResult updateRole(@NotNull @Valid RoleUpdateCommand command) {
         var optional = repository.findById(command.id());
@@ -64,6 +91,12 @@ public class MatrixRoleService {
         return IMatrixRoleMapper.INSTANCE.from(entity);
     }
 
+    /**
+     * deleteRole
+     *
+     * @param command RoleDeleteCommand
+     * @return RoleResult
+     */
     @CacheEvict(key = "'id:' + #result.id()")
     public RoleResult deleteRole(@NotNull @Valid RoleDeleteCommand command) {
         var optional = repository.findById(command.id(), RoleResult.class);
