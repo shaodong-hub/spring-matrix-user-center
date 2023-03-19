@@ -16,29 +16,35 @@ spec:
       labels:
         app: matrix-user
     spec:
+      #      serviceAccountName: matrix-user-service-account
       restartPolicy: Always
       imagePullSecrets:
         - name: aliyuncs
       containers:
         - name: matrix-user
-          image: registry.cn-hangzhou.aliyuncs.com/shishaodong/spring-matrix-user-center:0.0.6-SNAPSHOT
-          imagePullPolicy: Always
+          image: registry.cn-hangzhou.aliyuncs.com/shishaodong/spring-matrix-user-center:0.0.8
+          imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: '-Xms200M -Xmx200M -Xss512k -XX:+AlwaysPreTouch -XX:MaxMetaspaceSize=100M -XX:ReservedCodeCacheSize=50M -XX:MaxDirectMemorySize=50M'
+              value: '-Xms100M -Xmx100M -Xss256k -XX:+AlwaysPreTouch -XX:MaxMetaspaceSize=100M -XX:ReservedCodeCacheSize=50M -XX:MaxDirectMemorySize=100M'
+            - name: BPL_JVM_THREAD_COUNT
+              value: '20'
+          envFrom:
+            - secretRef:
+                name: matrix-user-secret
           resources:
             limits:
-              cpu: 2000m
+              cpu: 250m
               memory: 500Mi
             requests:
-              cpu: 1000m
-              memory: 200Mi
+              cpu: 250m
+              memory: 500Mi
           readinessProbe:
             httpGet:
               port: 2022
               path: /actuator/health/readiness
               scheme: HTTP
-            initialDelaySeconds: 900
+            initialDelaySeconds: 15
             periodSeconds: 5
             timeoutSeconds: 5
             failureThreshold: 3
@@ -47,14 +53,18 @@ spec:
               port: 2022
               path: /actuator/health/liveness
               scheme: HTTP
-            initialDelaySeconds: 900
+            initialDelaySeconds: 15
             periodSeconds: 5
             failureThreshold: 3
           volumeMounts:
-            - mountPath: /workspace/config
-              name: matrix-user-configmap
+            - name: matrix-user-config
+              mountPath: /workspace/config
+            - name: matrix-user-log
+              mountPath: /workspace/log
       volumes:
-        - name: matrix-user-configmap
+        - name: matrix-user-config
           configMap:
             name: matrix-user-configmap
-
+        - name: matrix-user-log
+          persistentVolumeClaim:
+            claimName: matrix-user-volume-claim

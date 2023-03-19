@@ -12,7 +12,7 @@
 
     <groupId>com.matrixboot</groupId>
     <artifactId>spring-matrix-user-center</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.8</version>
     <name>spring-matrix-user-center</name>
     <description>spring-matrix-user-center</description>
 
