@@ -1,9 +1,9 @@
 package com.matrixboot.user.center.infrastructure.mapper;
 
-import com.matrixboot.user.center.domain.entity.user.MatrixUserEntity;
-import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
-import com.matrixboot.user.center.infrastructure.common.result.UserResult;
+import com.matrixboot.user.center.domain.entity.role.MatrixRoleEntity;
+import com.matrixboot.user.center.infrastructure.common.command.RoleCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.RoleUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.result.RoleResult;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -14,15 +14,15 @@ import static org.mapstruct.NullValueCheckStrategy.ALWAYS;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 /**
- * create in 2022/11/28 20:16
+ * create in 2023/3/19 22:20
  *
  * @author shishaodong
  * @version 0.0.1
  */
 @Mapper(nullValuePropertyMappingStrategy = IGNORE, nullValueCheckStrategy = ALWAYS, unmappedSourcePolicy = ReportingPolicy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface IMatrixUserMapper {
+public interface IMatrixRoleMapper {
 
-    IMatrixUserMapper INSTANCE = Mappers.getMapper(IMatrixUserMapper.class);
+    IMatrixRoleMapper INSTANCE = Mappers.getMapper(IMatrixRoleMapper.class);
 
     /**
      * from
@@ -30,22 +30,24 @@ public interface IMatrixUserMapper {
      * @param user MatrixUserEntity
      * @return UserResult
      */
-    UserResult from(MatrixUserEntity user);
+    MatrixRoleEntity from(RoleCreateCommand user);
 
     /**
      * from
      *
-     * @param command UserCreateCommand
-     * @return MatrixUserEntity
+     * @param user MatrixUserEntity
+     * @return UserResult
      */
-    MatrixUserEntity from(UserCreateCommand command);
+    RoleResult from(MatrixRoleEntity user);
+
 
     /**
      * update
      *
-     * @param command UserUpdateCommand
-     * @param entity  MatrixUserEntity
+     * @param command RoleUpdateCommand
+     * @param entity  MatrixRoleEntity
      */
     @InheritConfiguration
-    void update(UserUpdateCommand command, @MappingTarget MatrixUserEntity entity);
+    void update(RoleUpdateCommand command, @MappingTarget MatrixRoleEntity entity);
+
 }

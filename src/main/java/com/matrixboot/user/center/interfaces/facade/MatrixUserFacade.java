@@ -33,7 +33,7 @@ public class MatrixUserFacade {
         return Result.success(userService.findUserById(id));
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/user/username/{username}")
     public Result<UserResult> findUserByUsername(@PathVariable String username) {
         return Result.success(userService.findUserByUsername(username));
     }
@@ -48,7 +48,7 @@ public class MatrixUserFacade {
         return Result.success(userService.updateUser(command));
     }
 
-    @DeleteMapping("/user/id")
+    @DeleteMapping("/user")
     public Result<UserResult> deleteUserById(@RequestBody UserDeleteCommand command) {
         return Result.success(userService.deleteUserById(command));
     }

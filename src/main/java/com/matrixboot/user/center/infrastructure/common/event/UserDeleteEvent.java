@@ -6,5 +6,5 @@ package com.matrixboot.user.center.infrastructure.common.event;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserDeleteEvent(Long id, String username) implements IMatrixUserEvent{
+public record UserDeleteEvent(Long id, String username) implements IMatrixUserEvent {
 }

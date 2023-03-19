@@ -5,11 +5,11 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * create in 2022/11/28 13:24
+ * create in 2023/3/19 22:43
  *
  * @author shishaodong
  * @version 0.0.1
  */
 @ToString
-public record UserIdQuery(Long id) implements Serializable {
+public record RoleQuery() implements Serializable {
 }

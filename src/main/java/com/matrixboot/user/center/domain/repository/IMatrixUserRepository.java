@@ -1,6 +1,6 @@
 package com.matrixboot.user.center.domain.repository;
 
-import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
+import com.matrixboot.user.center.domain.entity.user.MatrixUserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,17 +13,7 @@ import java.util.Optional;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long> {
-
-    /**
-     * findById
-     *
-     * @param id  id
-     * @param clz clz
-     * @param <T> clz
-     * @return clz
-     */
-    <T> Optional<T> findById(Long id, Class<T> clz);
+public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long>, IBaseRepository {
 
     /**
      * findByUsername

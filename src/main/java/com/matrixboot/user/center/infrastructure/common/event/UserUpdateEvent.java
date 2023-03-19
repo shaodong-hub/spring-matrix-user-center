@@ -6,5 +6,5 @@ package com.matrixboot.user.center.infrastructure.common.event;
  * @author shishaodong
  * @version 0.0.1
  */
-public record UserUpdateEvent(Long id, String username) implements IMatrixUserEvent{
+public record UserUpdateEvent(Long id, String username) implements IMatrixUserEvent {
 }

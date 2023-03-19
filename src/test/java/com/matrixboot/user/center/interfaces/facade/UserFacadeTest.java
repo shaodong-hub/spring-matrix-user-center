@@ -2,7 +2,7 @@ package com.matrixboot.user.center.interfaces.facade;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matrixboot.user.center.domain.entity.MatrixUserEntity;
+import com.matrixboot.user.center.domain.entity.user.MatrixUserEntity;
 import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import io.micrometer.core.instrument.util.IOUtils;
 import jakarta.annotation.Resource;

@@ -1,13 +1,17 @@
-package com.matrixboot.user.center.domain.entity;
+package com.matrixboot.user.center.domain.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.matrixboot.user.center.domain.AuditInfo;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,7 +27,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * create in 2023/3/11 02:04
+ * create in 2023/3/19 21:23
  *
  * @author shishaodong
  * @version 0.0.1
@@ -33,14 +37,14 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "matrix_role")
+@Table(name = "matrix_user_role")
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-public class MatrixRoleEntity implements Serializable {
+public class MatrixUserRoleEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -6958352591294167495L;
+    private static final long serialVersionUID = 7519729838081369971L;
 
     /**
      * 用户的唯一 ID，与业务无关，自增
@@ -50,21 +54,15 @@ public class MatrixRoleEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name", columnDefinition = "VARCHAR(30) DEFAULT '' COMMENT 'roleName'")
-    private String roleName;
-
-    @Column(name = "role_code", columnDefinition = "VARCHAR(30) DEFAULT '' COMMENT 'roleCode'")
-    private String roleCode;
-
-    @Embedded
-    private AuditInfo auditInfo;
-
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
-//    @ManyToOne(targetEntity = MatrixUserEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-//    @JsonBackReference
-//    private MatrixUserEntity user;
+    @ManyToOne(targetEntity = MatrixUserEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JsonBackReference
+    private MatrixUserEntity user;
+
+    @Embedded
+    private AuditInfo auditInfo;
 
     @Version
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")

@@ -10,7 +10,7 @@ import java.io.Serial;
  * @author shishaodong
  * @version 0.0.1
  */
-public class UserIdNotFountException extends UserNotFountException{
+public class UserIdNotFountException extends UserNotFountException {
 
     @Serial
     private static final long serialVersionUID = -1041772808948135766L;

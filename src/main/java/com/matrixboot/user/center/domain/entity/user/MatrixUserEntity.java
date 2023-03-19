@@ -1,18 +1,24 @@
-package com.matrixboot.user.center.domain.entity;
+package com.matrixboot.user.center.domain.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.user.center.domain.AuditInfo;
 import com.matrixboot.user.center.domain.IdCard;
 import com.matrixboot.user.center.domain.UserStatus;
 import com.matrixboot.user.center.infrastructure.common.event.UserCreateEvent;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKey;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
@@ -31,6 +37,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * create in 2022/11/28 19:09
@@ -120,6 +127,12 @@ public class MatrixUserEntity implements Serializable {
     @Column(name = "last_login_date", columnDefinition = "DATETIME COMMENT '最后登录时间'")
     private LocalDateTime lastLoginDate;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    @MapKey(name = "id")
+    @JsonManagedReference
+    private Map<Long, MatrixUserRoleEntity> roles;
+
     /**
      * domainEvent
      *
@@ -130,11 +143,4 @@ public class MatrixUserEntity implements Serializable {
     public Collection<UserCreateEvent> domainEvent() {
         return Collections.singletonList(new UserCreateEvent(this.getId(), this.getUsername()));
     }
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "user_id")
-//    @MapKey(name = "roleCode")
-//    @JsonManagedReference
-//    private Map<String, MatrixRoleEntity> roles;
-
 }
