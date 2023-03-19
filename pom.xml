@@ -23,6 +23,7 @@
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <commons-io.version>2.11.0</commons-io.version>
         <snakeyaml.version>2.0</snakeyaml.version>
+        <passay.version>1.6.2</passay.version>
         <!-- 插件版本 -->
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <smart-doc.version>2.1.7</smart-doc.version>
@@ -30,6 +31,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${passay.version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

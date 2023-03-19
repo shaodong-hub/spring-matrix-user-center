@@ -1,7 +1,7 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 

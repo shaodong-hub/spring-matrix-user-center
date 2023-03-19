@@ -1,7 +1,8 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
-import jakarta.validation.constraints.NotBlank;
+import com.matrixboot.user.center.infrastructure.constraints.annotation.WeakPassword;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
@@ -12,9 +13,9 @@ import java.io.Serializable;
  * @version 0.0.1
  */
 @ToString
-public record UserCreateCommand(@NotBlank String username,
-                                @NotBlank String password,
-                                @NotBlank String mobile,
-                                @NotBlank String contacts,
-                                @NotBlank String email) implements Serializable {
+public record UserCreateCommand(@Length(min = 1, max = 16) String username,
+                                @WeakPassword String password,
+                                @Length(min = 1, max = 16) String mobile,
+                                @Length(min = 1, max = 16) String contacts,
+                                @Length(min = 1, max = 16) String email) implements Serializable {
 }

@@ -1,8 +1,8 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
@@ -14,9 +14,9 @@ import java.io.Serializable;
  */
 @ToString
 public record UserUpdateCommand(@NotNull Long id,
-                                @NotBlank String username,
-                                @NotBlank String password,
-                                @NotBlank String mobile,
-                                @NotBlank String contacts,
-                                @NotBlank String email) implements Serializable {
+                                @Length(max = 16) String username,
+                                @Length(max = 16) String password,
+                                @Length(max = 16) String mobile,
+                                @Length(max = 16) String contacts,
+                                @Length(max = 16) String email) implements Serializable {
 }

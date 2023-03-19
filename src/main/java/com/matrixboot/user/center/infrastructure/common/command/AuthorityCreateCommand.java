@@ -1,6 +1,7 @@
 package com.matrixboot.user.center.infrastructure.common.command;
 
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
@@ -11,5 +12,6 @@ import java.io.Serializable;
  * @version 0.0.1
  */
 @ToString
-public record AuthorityCreateCommand() implements Serializable {
+public record AuthorityCreateCommand(@Length(min = 1, max = 16) String authorityName,
+                                     @Length(min = 1, max = 16) String authority) implements Serializable {
 }
