@@ -1,8 +1,8 @@
 package com.matrixboot.user.center.infrastructure.mapper;
 
 import com.matrixboot.user.center.domain.entity.user.MatrixUserEntity;
-import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;

@@ -1,6 +1,6 @@
 package com.matrixboot.user.center.interfaces.facade;
 
-import com.matrixboot.user.center.application.service.UserManageService;
+import com.matrixboot.user.center.application.service.user.MatrixUserService;
 import com.matrixboot.user.center.infrastructure.common.Result;
 import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserManageFacade {
 
-    private final UserManageService userService;
+    private final MatrixUserService userService;
 
     @GetMapping("/users")
     public Result<Page<UserResult>> findByCondition(@NotNull UserQuery query, Pageable pageable) {

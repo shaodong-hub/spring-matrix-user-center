@@ -2,6 +2,7 @@ package com.matrixboot.user.center.domain.entity.role;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.user.center.domain.AuditInfo;
+import com.matrixboot.user.center.domain.entity.authority.MatrixAuthorityEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -15,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKey;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,6 +30,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,4 +79,7 @@ public class MatrixRoleEntity implements Serializable {
     @Version
     @Column(columnDefinition = "BIGINT DEFAULT 0 COMMENT '版本号'")
     private Long version;
+
+    @Transient
+    private List<MatrixAuthorityEntity> authorityEntityList;
 }

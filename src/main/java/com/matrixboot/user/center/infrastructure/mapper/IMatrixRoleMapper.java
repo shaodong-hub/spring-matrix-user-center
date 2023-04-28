@@ -1,8 +1,8 @@
 package com.matrixboot.user.center.infrastructure.mapper;
 
 import com.matrixboot.user.center.domain.entity.role.MatrixRoleEntity;
-import com.matrixboot.user.center.infrastructure.common.command.RoleCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.RoleUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.role.RoleCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.role.RoleUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.result.RoleResult;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;

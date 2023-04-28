@@ -1,9 +1,9 @@
-package com.matrixboot.user.center.application.service;
+package com.matrixboot.user.center.application.service.role;
 
 import com.matrixboot.user.center.domain.repository.IMatrixRoleRepository;
-import com.matrixboot.user.center.infrastructure.common.command.RoleCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.RoleDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.RoleUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.role.RoleCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.role.RoleDeleteCommand;
+import com.matrixboot.user.center.infrastructure.common.command.role.RoleUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.query.RoleQuery;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.RandomStringUtils;

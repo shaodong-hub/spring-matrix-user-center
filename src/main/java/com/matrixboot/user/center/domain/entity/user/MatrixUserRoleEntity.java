@@ -2,12 +2,10 @@ package com.matrixboot.user.center.domain.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.matrixboot.user.center.domain.AuditInfo;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,7 +55,7 @@ public class MatrixUserRoleEntity implements Serializable {
     @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
-    @ManyToOne(targetEntity = MatrixUserEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = MatrixUserEntity.class)
     @JsonBackReference
     private MatrixUserEntity user;
 

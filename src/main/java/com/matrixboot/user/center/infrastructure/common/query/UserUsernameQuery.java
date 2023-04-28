@@ -1,7 +1,5 @@
 package com.matrixboot.user.center.infrastructure.common.query;
 
-import lombok.ToString;
-
 import java.io.Serializable;
 
 /**
@@ -10,6 +8,5 @@ import java.io.Serializable;
  * @author shishaodong
  * @version 0.0.1
  */
-@ToString
 public record UserUsernameQuery(String username) implements Serializable {
 }

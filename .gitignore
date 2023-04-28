@@ -34,3 +34,4 @@ build/
 /src/main/resources/application-dev.properties
 /src/test/resources/application-junit.properties
 /k8s/kube-configmap.yaml
+/src/main/resources/aliyuncs.properties

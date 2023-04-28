@@ -1,10 +1,10 @@
-package com.matrixboot.user.center.application.service;
+package com.matrixboot.user.center.application.service.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
-import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserDeleteCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import io.micrometer.core.instrument.util.IOUtils;
 import jakarta.annotation.Resource;
@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -41,9 +43,6 @@ class MatrixUserServiceTest {
     MatrixUserService userService;
 
     @Resource
-    IMatrixUserRepository repository;
-
-    @Resource
     ObjectMapper objectMapper;
 
     @Value("classpath:json/UserCreateCommand.json")
@@ -56,6 +55,13 @@ class MatrixUserServiceTest {
     void afterEach() {
 //        repository.deleteAll();
     }
+
+    @Test
+    void findByConditions() {
+        Page<UserResult> page = userService.findByConditions(new UserQuery(null, null), Pageable.unpaged());
+        Assertions.assertEquals(2L, page.getTotalElements());
+    }
+
 
     @Test
     void findUserById() {
@@ -108,4 +114,6 @@ class MatrixUserServiceTest {
         Assertions.assertEquals(1L, result.id());
         Assertions.assertEquals("test_username1", result.username());
     }
+
+
 }

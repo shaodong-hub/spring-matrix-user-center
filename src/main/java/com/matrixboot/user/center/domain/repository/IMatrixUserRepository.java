@@ -4,6 +4,7 @@ import com.matrixboot.user.center.domain.entity.user.MatrixUserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  * @author shishaodong
  * @version 0.0.1
  */
-public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long>, IBaseRepository {
+public interface IMatrixUserRepository extends JpaRepository<MatrixUserEntity, Long>, IBaseRepository, JpaSpecificationExecutor<MatrixUserEntity> {
 
     /**
      * findByUsername

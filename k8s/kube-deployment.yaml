@@ -19,10 +19,10 @@ spec:
       #      serviceAccountName: matrix-user-service-account
       restartPolicy: Always
       imagePullSecrets:
-        - name: aliyuncs
+        - name: aliyuncs.properties
       containers:
         - name: matrix-user
-          image: registry.cn-hangzhou.aliyuncs.com/shishaodong/spring-matrix-user-center:0.0.8
+          image: registry.cn-hangzhou.aliyuncs.properties.com/shishaodong/spring-matrix-user-center:0.0.8
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_TOOL_OPTIONS

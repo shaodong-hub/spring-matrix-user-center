@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.matrixboot</groupId>
     <artifactId>spring-matrix-user-center</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.10</version>
     <name>spring-matrix-user-center</name>
     <description>spring-matrix-user-center</description>
 
@@ -28,6 +28,11 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <smart-doc.version>2.1.7</smart-doc.version>
         <compiler.version>3.8.1</compiler.version>
+        <!-- 环境变量 -->
+        <!--               <aliyuncs.username/>-->
+        <!--               <aliyuncs.password/>-->
+        <!--               <aliyuncs.url/>-->
+        <!--               <aliyuncs.email/>-->
     </properties>
 
     <dependencies>
@@ -144,6 +149,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -199,10 +211,10 @@
                     <docker>
                         <tlsVerify>false</tlsVerify>
                         <publishRegistry>
-                            <username>spring-boot@qq.com</username>
-                            <password>shaodong0924</password>
-                            <url>https://registry.cn-hangzhou.aliyuncs.com</url>
-                            <email>spring-boot@qq.com</email>
+                            <username>${aliyuncs.username}</username>
+                            <password>${aliyuncs.username}</password>
+                            <url>${aliyuncs.url}</url>
+                            <email>${aliyuncs.email}</email>
                         </publishRegistry>
                     </docker>
                 </configuration>
@@ -238,6 +250,68 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <!-- 打包时加入当前 GIT 提交信息 -->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <offline>true</offline>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <!-- git.commit.id.abbrev属性值的长度，取值范围在[2, 40]，默认值7 -->
+                    <abbrevLength>7</abbrevLength>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>read-properties</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <!--                                <file>${basedir}/src/main/resources/aliyuncs.properties</file>-->
+                                <file>
+                                    /Users/shishaodong/IdeaProjects/spring-matrix-user-center/src/main/resources/aliyuncs.properties
+                                </file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>Displaying value of properties</echo>
+                                <echo>[aliyuncs.username] ${aliyuncs.username}</echo>
+                                <echo>[aliyuncs.password] ${aliyuncs.password}</echo>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

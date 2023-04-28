@@ -1,10 +1,10 @@
 package com.matrixboot.user.center.interfaces.facade;
 
-import com.matrixboot.user.center.application.service.MatrixUserService;
+import com.matrixboot.user.center.application.service.user.MatrixUserService;
 import com.matrixboot.user.center.infrastructure.common.Result;
-import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserDeleteCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MatrixUserFacade {
 
     private final MatrixUserService userService;
-
 
     @GetMapping("/user/id/{id}")
     public Result<UserResult> findUserById(@PathVariable Long id) {

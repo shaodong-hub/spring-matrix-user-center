@@ -1,9 +1,12 @@
-package com.matrixboot.user.center.application.service;
+package com.matrixboot.user.center.application.service.user;
 
 import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
-import com.matrixboot.user.center.infrastructure.common.command.UserCreateCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.bus.IEventBus;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserDeleteCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
+import com.matrixboot.user.center.infrastructure.common.event.UserDeleteEvent;
+import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import com.matrixboot.user.center.infrastructure.exception.UserEmailNotFountException;
 import com.matrixboot.user.center.infrastructure.exception.UserIdNotFountException;
@@ -21,6 +24,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +45,21 @@ import java.util.Optional;
 @CacheConfig(cacheNames = "common:user")
 public class MatrixUserService {
 
+    private final IEventBus eventBus;
+
     private final IMatrixUserRepository repository;
+
+    /**
+     * 按照条件查询
+     *
+     * @param query    查询条件
+     * @param pageable 分页
+     * @return Page
+     */
+    public Page<UserResult> findByConditions(@NotNull UserQuery query, Pageable pageable) {
+        return repository.findAll(query.specification(), pageable)
+                .map(x -> new UserResult(x.getId(), x.getUsername(), x.getMobile(), x.getEmail()));
+    }
 
     /**
      * findUserById
@@ -64,7 +83,6 @@ public class MatrixUserService {
         Optional<UserResult> optional = repository.findById(id, UserResult.class);
         return optional.orElseThrow(() -> new UserIdNotFountException(id));
     }
-
 
     /**
      * findByMobile
@@ -152,6 +170,7 @@ public class MatrixUserService {
         log.info("createUser {}", command);
         var user = IMatrixUserMapper.INSTANCE.from(command);
         var entity = repository.save(user);
+        eventBus.publishEvent(new UserDeleteEvent(entity.getId(), entity.getUsername()));
         return IMatrixUserMapper.INSTANCE.from(entity);
     }
 
@@ -180,6 +199,7 @@ public class MatrixUserService {
         var entity = optional.orElseThrow(() -> new UserIdNotFountException(command.id()));
         IMatrixUserMapper.INSTANCE.update(command, entity);
         var save = repository.save(entity);
+        eventBus.publishEvent(new UserDeleteEvent(save.getId(), save.getUsername()));
         return IMatrixUserMapper.INSTANCE.from(save);
     }
 
@@ -200,6 +220,7 @@ public class MatrixUserService {
         var optional = repository.findById(command.id());
         var user = optional.orElseThrow(() -> new UserIdNotFountException(command.id()));
         repository.delete(user);
+        eventBus.publishEvent(new UserDeleteEvent(user.getId(), user.getUsername()));
         return IMatrixUserMapper.INSTANCE.from(user);
     }
 }

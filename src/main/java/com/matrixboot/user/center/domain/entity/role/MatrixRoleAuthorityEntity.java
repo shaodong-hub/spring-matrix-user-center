@@ -2,12 +2,10 @@ package com.matrixboot.user.center.domain.entity.role;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.matrixboot.user.center.domain.AuditInfo;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -57,7 +55,7 @@ public class MatrixRoleAuthorityEntity implements Serializable {
     @Column(name = "role_id", insertable = false, updatable = false)
     private Long roleId;
 
-    @ManyToOne(targetEntity = MatrixRoleEntity.class, cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = MatrixRoleEntity.class)
     @JsonBackReference
     private MatrixRoleEntity authority;
 
