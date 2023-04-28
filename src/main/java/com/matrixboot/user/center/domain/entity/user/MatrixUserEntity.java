@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matrixboot.user.center.domain.AuditInfo;
 import com.matrixboot.user.center.domain.IdCard;
 import com.matrixboot.user.center.domain.UserStatus;
+import com.matrixboot.user.center.infrastructure.common.command.user.UpdateContactCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UpdateEmailCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UpdateMobileCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UpdatePasswordCommand;
+import com.matrixboot.user.center.infrastructure.common.command.user.UpdateUsernameCommand;
 import com.matrixboot.user.center.infrastructure.common.event.UserCreateEvent;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,10 +29,10 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -47,7 +52,6 @@ import java.util.Map;
  */
 @Slf4j
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "matrix_user",
@@ -133,6 +137,26 @@ public class MatrixUserEntity implements Serializable {
     @JsonManagedReference
     private Map<Long, MatrixUserRoleEntity> roles;
 
+    public void updateUsername(@NotNull UpdateUsernameCommand command) {
+        this.username = command.username();
+    }
+
+    public void updateMobile(@NotNull UpdateMobileCommand command) {
+        this.mobile = command.mobile();
+    }
+
+    public void updatePassword(@NotNull UpdatePasswordCommand command) {
+        this.password = command.password();
+    }
+
+    public void updateContact(@NotNull UpdateContactCommand command) {
+        this.contacts = command.contacts();
+    }
+
+    public void updateEmail(@NotNull UpdateEmailCommand command) {
+        this.email = command.email();
+    }
+
     /**
      * domainEvent
      *
@@ -141,6 +165,6 @@ public class MatrixUserEntity implements Serializable {
     @SuppressWarnings("unused")
     @DomainEvents
     public Collection<UserCreateEvent> domainEvent() {
-        return Collections.singletonList(new UserCreateEvent(this.getId(), this.getUsername()));
+        return Collections.singletonList(new UserCreateEvent(this.id, this.username));
     }
 }

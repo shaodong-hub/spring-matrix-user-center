@@ -4,14 +4,12 @@ import com.matrixboot.user.center.application.service.user.MatrixUserService;
 import com.matrixboot.user.center.infrastructure.common.Result;
 import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
 import com.matrixboot.user.center.infrastructure.common.command.user.UserDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,11 +38,6 @@ public class MatrixUserFacade {
     @PostMapping("/user")
     public Result<UserResult> createUser(@RequestBody UserCreateCommand command) {
         return Result.success(userService.createUser(command));
-    }
-
-    @PutMapping("/user")
-    public Result<UserResult> updateUser(@RequestBody UserUpdateCommand command) {
-        return Result.success(userService.updateUser(command));
     }
 
     @DeleteMapping("/user")

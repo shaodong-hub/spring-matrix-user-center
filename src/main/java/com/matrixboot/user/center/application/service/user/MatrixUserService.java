@@ -4,7 +4,6 @@ import com.matrixboot.user.center.domain.repository.IMatrixUserRepository;
 import com.matrixboot.user.center.infrastructure.bus.IEventBus;
 import com.matrixboot.user.center.infrastructure.common.command.user.UserCreateCommand;
 import com.matrixboot.user.center.infrastructure.common.command.user.UserDeleteCommand;
-import com.matrixboot.user.center.infrastructure.common.command.user.UserUpdateCommand;
 import com.matrixboot.user.center.infrastructure.common.event.UserDeleteEvent;
 import com.matrixboot.user.center.infrastructure.common.query.UserQuery;
 import com.matrixboot.user.center.infrastructure.common.result.UserResult;
@@ -172,35 +171,6 @@ public class MatrixUserService {
         var entity = repository.save(user);
         eventBus.publishEvent(new UserDeleteEvent(entity.getId(), entity.getUsername()));
         return IMatrixUserMapper.INSTANCE.from(entity);
-    }
-
-    /**
-     * updateUser
-     *
-     * @param command UserUpdateCommand
-     * @return UserResult
-     */
-    @Caching(
-            evict = {
-                    @CacheEvict(key = "'id:' + #result.id()"),
-                    @CacheEvict(key = "'username:' + #command.username()"),
-                    @CacheEvict(key = "'mobile:' + #command.mobile()"),
-                    @CacheEvict(key = "'email:' + #command.email()"),
-            },
-            put = {
-                    @CachePut(key = "'id:' + #result.id()", unless = "null == #result.id()"),
-                    @CachePut(key = "'username:' + #result.username()", unless = "null == #result.username()"),
-                    @CachePut(key = "'mobile:' + #result.mobile()", unless = "null == #result.mobile()"),
-                    @CachePut(key = "'email:' + #result.email()", unless = "null == #result.email()"),
-            }
-    )
-    public UserResult updateUser(@NotNull @Valid UserUpdateCommand command) {
-        var optional = repository.findById(command.id());
-        var entity = optional.orElseThrow(() -> new UserIdNotFountException(command.id()));
-        IMatrixUserMapper.INSTANCE.update(command, entity);
-        var save = repository.save(entity);
-        eventBus.publishEvent(new UserDeleteEvent(save.getId(), save.getUsername()));
-        return IMatrixUserMapper.INSTANCE.from(save);
     }
 
     /**
